@@ -10,6 +10,12 @@ class MyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(leading: Icon(icon), title: Text(text), onTap: OnTap);
+    return ListTile(
+        leading: Icon(icon),
+        title: Text(
+          text,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        onTap: OnTap);
   }
 }

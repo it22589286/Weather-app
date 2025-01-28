@@ -18,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String errorMessage = '';
   bool isCelsius = true;
 
+  // Get weather data
   Future<void> _getWeatherData() async {
     final city = _cityController.text.trim();
     if (city.isEmpty) return;
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Convert temperature
+  // Function to convert temperature
   double _convertTemperature(double temp) {
     return isCelsius ? temp : (temp * 9 / 5) + 32;
   }
@@ -90,114 +91,112 @@ class _HomeScreenState extends State<HomeScreen> {
               if (isLoading) CircularProgressIndicator(),
               if (errorMessage.isNotEmpty)
                 Text(errorMessage, style: TextStyle(color: Colors.red)),
-              if (weatherData != null) ...[
+              // Check if city is empty and show a message
+              if (_cityController.text.isEmpty)
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                    'Please enter a city to get the weather',
+                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                  ),
+                ),
+              // Display weather data if available
+              if (weatherData != null && _cityController.text.isNotEmpty) ...[
                 SizedBox(height: 20),
-                if (weatherData == null)
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Text(
-                      'Check weather',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Card(
+                    color: Theme.of(context).colorScheme.secondary,
+                    elevation: 4, // Adds a subtle shadow effect
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
                     ),
-                  )
-                else
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Card(
-                      elevation: 4, // Adds a subtle shadow effect
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15), // Rounded corners
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              ' ${weatherData!['name']} weather',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            ' ${weatherData!['name']} weather',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.blueAccent.withOpacity(0.8)),
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.network(
+                              'https://openweathermap.org/img/wn/${weatherData!['weather'][0]['icon']}@2x.png',
+                              fit: BoxFit.contain,
                             ),
-                            SizedBox(height: 10),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.blueAccent.withOpacity(0.8)),
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.network(
-                                'https://openweathermap.org/img/wn/${weatherData!['weather'][0]['icon']}@2x.png',
-                                fit: BoxFit.contain,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Temperature: ${_convertTemperature(weatherData!['main']['temp']).toStringAsFixed(1)} ${isCelsius ? '°C' : '°F'}',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Temperature: ${_convertTemperature(weatherData!['main']['temp']).toStringAsFixed(1)} ${isCelsius ? '°C' : '°F'}',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                              const SizedBox(width: 20),
+                              Text(
+                                '°C',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        isCelsius ? Colors.blue : Colors.grey),
+                              ),
+                              Switch(
+                                value: isCelsius,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isCelsius = value;
+                                  });
+                                },
+                              ),
+                              Text(
+                                '°F',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        !isCelsius ? Colors.blue : Colors.grey),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Text(
+                                'Condition: ${weatherData!['weather'][0]['description']}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          SizedBox(height: 20),
+                          MyButton(
+                            text: "Get 5 day Forecast",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ForecastScreen(
+                                      city: _cityController.text),
                                 ),
-                                const SizedBox(width: 20),
-                                Text(
-                                  '°C',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: isCelsius
-                                          ? Colors.blue
-                                          : Colors.grey),
-                                ),
-                                Switch(
-                                  value: isCelsius,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      isCelsius = value;
-                                    });
-                                  },
-                                ),
-                                Text(
-                                  '°F',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: !isCelsius
-                                          ? Colors.blue
-                                          : Colors.grey),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text(
-                                  'Condition: ${weatherData!['weather'][0]['description']}',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            SizedBox(height: 20),
-                            MyButton(
-                              text: "Get 5 day Forecast",
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ForecastScreen(
-                                        city: _cityController.text),
-                                  ),
-                                );
-                              },
-                            )
-                          ],
-                        ),
+                              );
+                            },
+                          )
+                        ],
                       ),
                     ),
-                  )
+                  ),
+                )
               ]
             ],
           ),

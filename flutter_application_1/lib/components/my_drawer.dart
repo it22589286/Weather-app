@@ -15,7 +15,7 @@ class MyDrawer extends StatelessWidget {
           // drawer header
           Column(
             children: [
-              DrawerHeader(child: Icon(Icons.trolley)),
+              DrawerHeader(child: Icon(Icons.wb_sunny)),
 
               //shop title
               MyListTile(

@@ -28,18 +28,55 @@ class _SavedWeatherScreenState extends State<SavedWeatherScreen> {
   }
 
   Future<void> _clearSavedForecasts() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('savedForecasts');
-    setState(() {
-      savedForecasts.clear();
-    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Clear saved forecasts?"),
+            content: Text("This action cannot be undone."),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel",
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary)),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+
+                      await prefs.remove('savedForecasts');
+                      setState(() {
+                        savedForecasts.clear();
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text("Clear",
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary)),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Saved Forecasts"),
+        title: Text("Saved Forecasts",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
@@ -54,9 +91,10 @@ class _SavedWeatherScreenState extends State<SavedWeatherScreen> {
               itemBuilder: (context, index) {
                 final forecast = savedForecasts[index];
                 return Card(
+                  color: Theme.of(context).colorScheme.secondary,
                   margin: EdgeInsets.all(10),
                   child: ListTile(
-                    title: Text(forecast['date']!),
+                    title: Text('${forecast['city']} - ${forecast['date']}'),
                     subtitle: Text(
                         "${forecast['temp']} °C - ${forecast['description']}"),
                   ),
