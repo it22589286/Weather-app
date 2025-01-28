@@ -28,11 +28,35 @@ class _SavedWeatherScreenState extends State<SavedWeatherScreen> {
   }
 
   Future<void> _clearSavedForecasts() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('savedForecasts');
-    setState(() {
-      savedForecasts.clear();
-    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Clear saved forecasts?"),
+            content: Text("This action cannot be undone."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+
+                  await prefs.remove('savedForecasts');
+                  setState(() {
+                    savedForecasts.clear();
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text("Clear"),
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -56,7 +80,7 @@ class _SavedWeatherScreenState extends State<SavedWeatherScreen> {
                 return Card(
                   margin: EdgeInsets.all(10),
                   child: ListTile(
-                    title: Text(forecast['date']!),
+                    title: Text('${forecast['city']} - ${forecast['date']}'),
                     subtitle: Text(
                         "${forecast['temp']} °C - ${forecast['description']}"),
                   ),

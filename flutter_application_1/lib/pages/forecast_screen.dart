@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/my_button.dart';
 import 'package:flutter_application_1/pages/saved_forecast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,12 +24,13 @@ class _ForecastScreenState extends State<ForecastScreen> {
 
   // Save forecast to SharedPreferences
   Future<void> _saveForecast(
-      String date, String temp, String description) async {
+      String date, String temp, String description, String city) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> savedForecasts = prefs.getStringList('savedForecasts') ?? [];
 
     // Create forecast data object
     Map<String, String> forecastData = {
+      'city': city,
       'date': date,
       'temp': temp,
       'description': description,
@@ -51,17 +53,6 @@ class _ForecastScreenState extends State<ForecastScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.bookmark),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SavedWeatherScreen()),
-              );
-            },
-          )
-        ],
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height * 0.7,
@@ -103,7 +94,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      color: Colors.blueAccent.withOpacity(0.8),
+                      color: Colors.grey.shade500,
                       child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Column(
@@ -138,12 +129,13 @@ class _ForecastScreenState extends State<ForecastScreen> {
                                   TextStyle(fontSize: 14, color: Colors.white),
                             ),
                             SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: () {
-                                _saveForecast(formattedDate, temp, description);
+                            MyButton(
+                              text: 'Save',
+                              onTap: () {
+                                _saveForecast(formattedDate, temp, description,
+                                    widget.city);
                               },
-                              child: Text("Save"),
-                            ),
+                            )
                           ],
                         ),
                       ),
