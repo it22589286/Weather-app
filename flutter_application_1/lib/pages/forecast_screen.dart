@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/my_button.dart';
-import 'package:flutter_application_1/pages/saved_forecast.dart';
+
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dart:convert';
 
 import 'package:flutter_application_1/auth/weather_details.dart';
@@ -103,21 +103,21 @@ class _ForecastScreenState extends State<ForecastScreen> {
                             Text(
                               formattedDate,
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 40,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             SizedBox(height: 10),
                             Image.network(
                               'https://openweathermap.org/img/wn/$iconCode@2x.png',
-                              width: 60,
-                              height: 60,
+                              width: 150,
+                              height: 150,
                             ),
                             SizedBox(height: 10),
                             Text(
                               '$temp °C',
                               style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: 30,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
@@ -128,7 +128,7 @@ class _ForecastScreenState extends State<ForecastScreen> {
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 40),
                             MyButton(
                               text: 'Save',
                               onTap: () {
