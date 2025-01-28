@@ -1,4 +1,4 @@
-# flutter_application_1
+# Wheather App
 
 
 This is a Flutter-based weather application that allows users to search for weather data, view a 5-day forecast, and save the forecast data using SharedPreferences. The app allows users to toggle between Celsius and Fahrenheit temperatures.This app have  dark mode and light mode versions
